@@ -19,7 +19,7 @@ namespace httpserver
             DefaultPort = port;
         }
 
-        public void run()
+        public void Run()
         {
             IPAddress newIp = IPAddress.Parse("10.154.1.132");
             TcpListener serverSocket = new TcpListener(newIp, DefaultPort);
@@ -29,11 +29,11 @@ namespace httpserver
                 TcpClient connectionSocket = serverSocket.AcceptTcpClient();
                 Console.WriteLine("Server activated now");
                 HttpWebServerService service = new HttpWebServerService(connectionSocket);
-                Thread myThread = new Thread(new ThreadStart(service.DoIt));
+                Thread myThread = new Thread(service.DoIt);
                 myThread.Start();
                 Thread.Sleep(1);
-                //service.DoIt();
             }
+            
         }
     }
 }

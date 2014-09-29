@@ -10,6 +10,7 @@ namespace httpserver
     public class HttpWebServerService
     {
         private readonly TcpClient _connectionSocket;
+        private static readonly string RootCatalog = @"C:\Users\Morten\Documents\Visual Studio 2013\Projects\WebServer2014\httpserver\opgave";
 
         public HttpWebServerService(TcpClient connectionSocket)
         {
@@ -36,21 +37,53 @@ namespace httpserver
 
                     if ((word[1] == "/"))
                     {
-                        throw new NullReferenceException();
+                        throw new NullReferenceException("1");
                     }
                     else
                     {
                         sw.Write("You have requested: " + word[1]);
                         sw.Write("\r\n");
-                        sr.ReadLine();
-                        ns.Flush();
+
+                        string filname = word[1] + ".txt";
+                        if (!File.Exists(RootCatalog + filname))
+                        {
+                            throw new FileNotFoundException();
+                        }
+
+                        using (FileStream source = File.Open(RootCatalog + filname, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        {
+                            sw.Write("HTTP/1.0 200 OK \r\n");
+                            sw.Write("\r\n");
+                            source.CopyTo(ns);
+                            source.Close();
+                        }
                     }
                     
 
                 }
+                catch (NullReferenceException)
+                {
+                    byte[] badRequest = Encoding.UTF8.GetBytes("HTTP Error 400 Bad request \r\n");
+                    ns.Write(badRequest, 0, badRequest.Length);
+                    sw.Write("\r\n");
+                    sr.ReadLine();
+                }
+                catch (FileNotFoundException)
+                {
+                    byte[] notFound = Encoding.UTF8.GetBytes("HTTP/1.0 404 File not found \r\n");
+                    ns.Write(notFound, 0, notFound.Length);
+                    sw.Write("\r\n");
+                    sr.ReadLine();
+                }
+                catch (IOException)
+                {
+                    byte[] error1 = Encoding.UTF8.GetBytes("HTTP/1.0 400 BAD REQUEST \r\n");
+                    ns.Write(error1, 0, error1.Length);
+                    sw.Write("\r\n");
+                    sr.ReadLine();
+                }
                 catch (Exception)
                 {
-
                     throw;
                 }
                 finally

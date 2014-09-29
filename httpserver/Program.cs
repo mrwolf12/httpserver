@@ -11,7 +11,7 @@ namespace httpserver
         static void Main(string[] args)
         {
             HttpServer newRun = new HttpServer(8888);
-            newRun.run();
+            newRun.Run();
         }
     }
 }
