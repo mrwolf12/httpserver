@@ -29,9 +29,23 @@ namespace httpserver
                     byte[] request = Encoding.UTF8.GetBytes("GET / HTTP/1.0 \r\n \r\n");
                     ns.Write(request, 0, request.Length);
                     sw.Write("\r\n");
-                    sw.Write("hallo \r\n");
-                    sr.ReadLine();
-                    ns.Flush();
+
+                    string req = sr.ReadLine();
+
+                    string[] word = req.Split(' ');
+
+                    if ((word[1] == "/"))
+                    {
+                        throw new NullReferenceException();
+                    }
+                    else
+                    {
+                        sw.Write("You have requested: " + word[1]);
+                        sw.Write("\r\n");
+                        sr.ReadLine();
+                        ns.Flush();
+                    }
+                    
 
                 }
                 catch (Exception)
