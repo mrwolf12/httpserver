@@ -10,9 +10,8 @@ namespace httpserver
     {
         static void Main(string[] args)
         {
-            HttpServer newRun = new HttpServer("10.154.1.132", 8888);
+            HttpServer newRun = new HttpServer(8888);
             newRun.run();
-            Console.WriteLine("Hello http server");
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace httpserver
 {
-    class HttpWebServerService
+    public class HttpWebServerService
     {
         private readonly TcpClient _connectionSocket;
 
@@ -22,7 +22,28 @@ namespace httpserver
             StreamReader sr = new StreamReader(ns);
             StreamWriter sw = new StreamWriter(ns);
             sw.AutoFlush = true;
+            while (_connectionSocket.Connected)
+            { 
+                try
+                {
+                    byte[] request = Encoding.UTF8.GetBytes("GET / HTTP/1.0 \r\n \r\n");
+                    ns.Write(request, 0, request.Length);
+                    sw.Write("\r\n");
+                    sw.Write("hallo \r\n");
+                    sr.ReadLine();
+                    ns.Flush();
 
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+                finally
+                {
+                    _connectionSocket.Close();
+                }
+            }
         }
     }
 }
