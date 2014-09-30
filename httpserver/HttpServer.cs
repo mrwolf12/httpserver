@@ -1,28 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace httpserver
 {
     public class HttpServer
     {
-        public static int DefaultPort;
-
-        public HttpServer(int port)
-        {
-            DefaultPort = port;
-        }
+        /// <summary>
+        /// server classen som sætter port og ip adresse
+        /// samt acceptere indkommen clienter 
+        /// </summary>
+        public static int DefaultPort = 8888;
 
         public void Run()
         {
-            IPAddress newIp = IPAddress.Parse("10.154.1.132");
-            TcpListener serverSocket = new TcpListener(newIp, DefaultPort);
+            IPHostEntry ipHost = Dns.GetHostEntry("localhost");
+            IPAddress local = ipHost.AddressList[0];
+            TcpListener serverSocket = new TcpListener(local, DefaultPort);
             serverSocket.Start();
             while (true)
             {
