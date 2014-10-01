@@ -33,47 +33,40 @@ namespace httpserver
             StreamReader sr = new StreamReader(ns);
             StreamWriter sw = new StreamWriter(ns);
             sw.AutoFlush = true;
-            while (_connectionSocket.Connected)
+            try
             {
-                try
+                string req = sr.ReadLine();
+                if (req != null)
                 {
-                    byte[] request = Encoding.UTF8.GetBytes("GET / HTTP/1.0 \r\n \r\n");
-                    ns.Write(request, 0, request.Length);
-                    sw.Write("\r\n");
-
-                    string req = sr.ReadLine();
                     string[] word = req.Split(' ');
-
                     if ((word[1] == "/"))
                     {
                         throw new NullReferenceException("1");
                     }
                     else
                     {
-                        sw.Write("You have requested: " + word[1]);
-                        sw.Write("\r\n");
                         GetValue(word, sw, ns);
                     }
                 }
-                catch (NullReferenceException)
-                {
-                    byte[] badRequest = Encoding.UTF8.GetBytes("HTTP Error 400 Bad request \r\n");
-                    ExceptionHandling(ns, badRequest, sw, sr);
-                }
-                catch (FileNotFoundException)
-                {
-                    byte[] badRequest = Encoding.UTF8.GetBytes("HTTP/1.0 404 File not found \r\n");
-                    ExceptionHandling(ns, badRequest, sw, sr);
-                }
-                catch (IOException)
-                {
-                    byte[] badRequest = Encoding.UTF8.GetBytes("HTTP/1.0 400 BAD REQUEST \r\n");
-                    ExceptionHandling(ns, badRequest, sw, sr);
-                }
-                finally
-                {
-                    _connectionSocket.Close();
-                }
+            }
+            catch (NullReferenceException)
+            {
+                byte[] badRequest = Encoding.UTF8.GetBytes("HTTP Error 400 Bad request\r\n");
+                ExceptionHandling(ns, badRequest, sw, sr);
+            }
+            catch (FileNotFoundException)
+            {
+                byte[] badRequest = Encoding.UTF8.GetBytes("HTTP/1.0 404 File not found\r\n");
+                ExceptionHandling(ns, badRequest, sw, sr);
+            }
+            catch (IOException)
+            {
+                byte[] badRequest = Encoding.UTF8.GetBytes("HTTP/1.0 400 BAD REQUEST\r\n");
+                ExceptionHandling(ns, badRequest, sw, sr);
+            }
+            finally
+            {
+                _connectionSocket.Close();
             }
         }
 
@@ -101,7 +94,8 @@ namespace httpserver
         /// <param name="ns"></param>
         private static void GetValue(string[] word, StreamWriter sw, Stream ns)
         {
-            string filname = word[1] + ".txt";
+            string filname = "/" + word[1];
+            
             if (!File.Exists(RootCatalog + filname))
             {
                 throw new FileNotFoundException();
@@ -109,10 +103,8 @@ namespace httpserver
 
             using (FileStream source = File.Open(RootCatalog + filname, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                sw.Write("HTTP/1.0 200 OK \r\n");
+                sw.Write("HTTP/1.0 200 OK\r\n");
                 sw.Write("\r\n");
-                source.CopyTo(ns);
-                source.Close();
             }
         }
     }
