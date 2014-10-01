@@ -23,19 +23,19 @@ namespace httpserverTest
         }
 
 
-        //[TestMethod]
-        //public void TestGetIllegalRequest()
-        //{
-        //    String line = GetFirstLine("GET /file.txt HTTP 1.0");
-        //    Assert.AreEqual("HTTP/1.0 400 Illegal request", line);
-        //}
+        [TestMethod]
+        public void TestGetIllegalRequest()
+        {
+            String line = GetFirstLine("GET /file.txt HTTP 1.0");
+            Assert.AreEqual("HTTP/1.0 400 Illegal request", line);
+        }
 
-        //[TestMethod]
-        //public void TestGetIllegalMethodName()
-        //{
-        //    String line = GetFirstLine("PLET /file.txt HTTP/1.0");
-        //    Assert.AreEqual("HTTP/1.0 400 Illegal request", line);
-        //}
+        [TestMethod]
+        public void TestGetIllegalMethodName()
+        {
+            String line = GetFirstLine("PLET /file.txt HTTP/1.0");
+            Assert.AreEqual("HTTP/1.0 400 Illegal request", line);
+        }
 
         //[TestMethod]
         //public void TestGetIllegalProtocol()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -35,13 +36,20 @@ namespace httpserver
             sw.AutoFlush = true;
             try
             {
+                
                 string req = sr.ReadLine();
+                Console.WriteLine(req);
                 if (req != null)
                 {
                     string[] word = req.Split(' ');
-                    if ((word[1] == "/"))
+
+                    if (word[2] != "HTTP/1.0")
                     {
-                        throw new NullReferenceException("1");
+                        throw new IOException();
+                    }
+                    else if ((word[1] == "/"))
+                    {
+                        throw new NullReferenceException();
                     }
                     else
                     {
@@ -61,7 +69,7 @@ namespace httpserver
             }
             catch (IOException)
             {
-                byte[] badRequest = Encoding.UTF8.GetBytes("HTTP/1.0 400 BAD REQUEST\r\n");
+                byte[] badRequest = Encoding.UTF8.GetBytes("HTTP/1.0 400 Illegal request\r\n");
                 ExceptionHandling(ns, badRequest, sw, sr);
             }
             finally
