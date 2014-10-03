@@ -140,8 +140,6 @@ namespace httpserver
                 {
                     Console.WriteLine("forbindelse afbrudt");
                 }
-                
-                
             }
         }
     }

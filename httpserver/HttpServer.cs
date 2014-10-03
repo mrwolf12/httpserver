@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace httpserver
 {
@@ -24,9 +25,7 @@ namespace httpserver
                 TcpClient connectionSocket = serverSocket.AcceptTcpClient();
                 Console.WriteLine("Server activated now");
                 HttpWebServerService service = new HttpWebServerService(connectionSocket);
-                Thread myThread = new Thread(service.DoIt);
-                myThread.Start();
-                //Thread.Sleep(1);
+                Task.Run(() => service.DoIt());
             }
             
         }
