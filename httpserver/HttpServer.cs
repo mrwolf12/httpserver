@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -27,7 +28,6 @@ namespace httpserver
                 HttpWebServerService service = new HttpWebServerService(connectionSocket);
                 Task.Run(() => service.DoIt());
             }
-            
         }
     }
 }

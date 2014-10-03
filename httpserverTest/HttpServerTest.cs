@@ -15,13 +15,12 @@ namespace httpserverTest
         [TestMethod]
         public void TestGet()
         {
-            String line = GetFirstLine("GET /file.txt HTTP/1.0");
+            String line = GetFirstLine("GET /billede.jpg HTTP/1.0");
             Assert.AreEqual("HTTP/1.0 200 OK", line);
 
             line = GetFirstLine("GET /fileDoesNotExist.txt HTTP/1.0");
             Assert.AreEqual("HTTP/1.0 404 File not found", line);
         }
-
 
         [TestMethod]
         public void TestGetIllegalRequest()
@@ -44,12 +43,12 @@ namespace httpserverTest
             Assert.AreEqual("HTTP/1.0 400 Illegal protocol", line);
         }
 
-        //[TestMethod]
-        //public void TestMethodNotImplemented()
-        //{
-        //    String line = GetFirstLine("POST /file.txt HTTP/1.0");
-        //    Assert.AreEqual("HTTP/1.0 200 xxx", line);
-        //}
+        [TestMethod]
+        public void TestMethodNotImplemented()
+        {
+            String line = GetFirstLine("POST /file.txt HTTP/1.0");
+            Assert.AreEqual("HTTP/1.0 200 xxx", line);
+        }
 
         /// <summary>
         /// Private helper method
@@ -72,7 +71,6 @@ namespace httpserverTest
             fromServer.Close();
             client.Close();
             return firstline;
-
         }
     }
 }
