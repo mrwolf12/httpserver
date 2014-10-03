@@ -129,6 +129,8 @@ namespace httpserver
             using (FileStream source = File.Open(RootCatalog + filname, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 sw.Write("HTTP/1.0 200 OK\r\n");
+                sw.Write(GetHeader.ResponsHeader(word[2]) + "\r\n");
+                Console.WriteLine(GetHeader.ResponsHeader(word[2]));
                 sw.Write("\r\n");
                 try
                 {
