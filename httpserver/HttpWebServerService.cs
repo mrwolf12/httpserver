@@ -38,7 +38,7 @@ namespace httpserver
             {
 
                 string req = sr.ReadLine();
-                Console.WriteLine(req);
+                Log.WriteInfo(req);
                 if (req != null)
                 {
                     string[] word = req.Split(' ' , '.');
@@ -67,30 +67,31 @@ namespace httpserver
             }
             catch (ArgumentException)
             {
-                Console.WriteLine("ArgumentException");
+                Log.WriteInfo("ArgumentException");
                 byte[] badRequest = Encoding.UTF8.GetBytes("HTTP/1.0 400 Illegal protocol\r\n");
                 ExceptionHandling(ns, badRequest, sw, sr);
             }
             catch (NullReferenceException)
             {
-                Console.WriteLine("NullReferenceException");
+                Log.WriteInfo("NullReferenceException");
                 byte[] badRequest = Encoding.UTF8.GetBytes("HTTP Error 400 Bad request\r\n");
                 ExceptionHandling(ns, badRequest, sw, sr);
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine("FileNotFoundException");
+                Log.WriteInfo("FileNotFoundException");
                 byte[] badRequest = Encoding.UTF8.GetBytes("HTTP/1.0 404 File not found\r\n");
                 ExceptionHandling(ns, badRequest, sw, sr);
             }
             catch (IOException)
             {
-                Console.WriteLine("IOException");
+                Log.WriteInfo("IOException");
                 byte[] badRequest = Encoding.UTF8.GetBytes("HTTP/1.0 400 Illegal request\r\n");
                 ExceptionHandling(ns, badRequest, sw, sr);
             }
             finally
             {
+                Log.WriteInfo("Server stoppet");
                 _connectionSocket.Close();
             }
         }
@@ -120,16 +121,13 @@ namespace httpserver
         private static void GetValue(string[] word, StreamWriter sw, Stream ns)
         {
             string filname = word[1] + "." + word[2];
-            Console.WriteLine(filname);
             if (!File.Exists(RootCatalog + filname))
             {
-                Console.WriteLine("hej");
                 throw new FileNotFoundException();
             }
 
             using (FileStream source = File.Open(RootCatalog + filname, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                Console.WriteLine("rigtig");
                 sw.Write("HTTP/1.0 200 OK\r\n");
                 sw.Write("\r\n");
                 try
@@ -138,7 +136,7 @@ namespace httpserver
                 }
                 catch (IOException)
                 {
-                    Console.WriteLine("forbindelse afbrudt");
+                    Log.WriteInfo("forbindelse afbrudt");
                 }
             }
         }

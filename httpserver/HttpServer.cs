@@ -23,7 +23,7 @@ namespace httpserver
             while (true)
             {
                 TcpClient connectionSocket = serverSocket.AcceptTcpClient();
-                Console.WriteLine("Server activated now");
+                Log.WriteInfo("Server starte");
                 HttpWebServerService service = new HttpWebServerService(connectionSocket);
                 Task.Run(() => service.DoIt());
             }
