@@ -26,7 +26,7 @@ namespace httpserver
                 HttpWebServerService service = new HttpWebServerService(connectionSocket);
                 Thread myThread = new Thread(service.DoIt);
                 myThread.Start();
-                Thread.Sleep(1);
+                //Thread.Sleep(1);
             }
             
         }

@@ -12,7 +12,7 @@ namespace httpserver
         /// parameter til forbindelse og fildestination.
         /// </summary>
         private readonly TcpClient _connectionSocket;
-        private static readonly string RootCatalog = @"C:\Users\Morten\Documents\Visual Studio 2013\Projects\WebServer2014\httpserver\opgave\";
+        private static readonly string RootCatalog = @"C:\Users\Morten\Documents\Visual Studio 2013\Projects\WebServer2014\httpserver\opgave";
 
         /// <summary>
         /// Constructor for forbindelsen.
@@ -50,12 +50,12 @@ namespace httpserver
                     {
                         throw new IOException();
                     }
-                    else if (word[0] != "GET")
+                    if (word[0] != "GET")
                     {
                         throw new IOException();
                     }
                     string[] newWord = req.Split('/');
-                    if (newWord[2] != "1.0")
+                    if (newWord[2] != "1.1" && newWord[2] != "1.0")
                     {
                         throw new ArgumentException();
                     }
@@ -67,21 +67,25 @@ namespace httpserver
             }
             catch (ArgumentException)
             {
+                Console.WriteLine("ArgumentException");
                 byte[] badRequest = Encoding.UTF8.GetBytes("HTTP/1.0 400 Illegal protocol\r\n");
                 ExceptionHandling(ns, badRequest, sw, sr);
             }
             catch (NullReferenceException)
             {
+                Console.WriteLine("NullReferenceException");
                 byte[] badRequest = Encoding.UTF8.GetBytes("HTTP Error 400 Bad request\r\n");
                 ExceptionHandling(ns, badRequest, sw, sr);
             }
             catch (FileNotFoundException)
             {
+                Console.WriteLine("FileNotFoundException");
                 byte[] badRequest = Encoding.UTF8.GetBytes("HTTP/1.0 404 File not found\r\n");
                 ExceptionHandling(ns, badRequest, sw, sr);
             }
             catch (IOException)
             {
+                Console.WriteLine("IOException");
                 byte[] badRequest = Encoding.UTF8.GetBytes("HTTP/1.0 400 Illegal request\r\n");
                 ExceptionHandling(ns, badRequest, sw, sr);
             }
@@ -116,15 +120,28 @@ namespace httpserver
         private static void GetValue(string[] word, StreamWriter sw, Stream ns)
         {
             string filname = word[1] + "." + word[2];
+            Console.WriteLine(filname);
             if (!File.Exists(RootCatalog + filname))
             {
+                Console.WriteLine("hej");
                 throw new FileNotFoundException();
             }
 
             using (FileStream source = File.Open(RootCatalog + filname, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
+                Console.WriteLine("rigtig");
                 sw.Write("HTTP/1.0 200 OK\r\n");
                 sw.Write("\r\n");
+                try
+                {
+                    source.CopyTo(ns);
+                }
+                catch (IOException)
+                {
+                    Console.WriteLine("forbindelse afbrudt");
+                }
+                
+                
             }
         }
     }
