@@ -37,12 +37,12 @@ namespace httpserverTest
             Assert.AreEqual("HTTP/1.0 400 Illegal request", line);
         }
 
-        //[TestMethod]
-        //public void TestGetIllegalProtocol()
-        //{
-        //    String line = GetFirstLine("GET /file.txt HTTP/1.2");
-        //    Assert.AreEqual("HTTP/1.0 400 Illegal protocol", line);
-        //}
+        [TestMethod]
+        public void TestGetIllegalProtocol()
+        {
+            String line = GetFirstLine("GET /file.txt HTTP/1.2");
+            Assert.AreEqual("HTTP/1.0 400 Illegal protocol", line);
+        }
 
         //[TestMethod]
         //public void TestMethodNotImplemented()

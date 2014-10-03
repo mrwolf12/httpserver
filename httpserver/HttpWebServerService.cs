@@ -12,7 +12,7 @@ namespace httpserver
         /// parameter til forbindelse og fildestination.
         /// </summary>
         private readonly TcpClient _connectionSocket;
-        private static readonly string RootCatalog = @"C:\Users\Morten\Documents\Visual Studio 2013\Projects\WebServer2014\httpserver\opgave";
+        private static readonly string RootCatalog = @"C:\Users\Morten\Documents\Visual Studio 2013\Projects\WebServer2014\httpserver\opgave\";
 
         /// <summary>
         /// Constructor for forbindelsen.
@@ -36,26 +36,39 @@ namespace httpserver
             sw.AutoFlush = true;
             try
             {
-                
+
                 string req = sr.ReadLine();
                 Console.WriteLine(req);
                 if (req != null)
                 {
-                    string[] word = req.Split(' ');
-
-                    if (word[2] != "HTTP/1.0")
+                    string[] word = req.Split(' ' , '.');
+                    if ((word[1] == "/"))
+                    {
+                        throw new NullReferenceException();
+                    }
+                    if (word[3] != "HTTP/1")
                     {
                         throw new IOException();
                     }
-                    else if ((word[1] == "/"))
+                    else if (word[0] != "GET")
                     {
-                        throw new NullReferenceException();
+                        throw new IOException();
+                    }
+                    string[] newWord = req.Split('/');
+                    if (newWord[2] != "1.0")
+                    {
+                        throw new ArgumentException();
                     }
                     else
                     {
                         GetValue(word, sw, ns);
                     }
                 }
+            }
+            catch (ArgumentException)
+            {
+                byte[] badRequest = Encoding.UTF8.GetBytes("HTTP/1.0 400 Illegal protocol\r\n");
+                ExceptionHandling(ns, badRequest, sw, sr);
             }
             catch (NullReferenceException)
             {
@@ -102,8 +115,7 @@ namespace httpserver
         /// <param name="ns"></param>
         private static void GetValue(string[] word, StreamWriter sw, Stream ns)
         {
-            string filname = "/" + word[1];
-            
+            string filname = word[1] + "." + word[2];
             if (!File.Exists(RootCatalog + filname))
             {
                 throw new FileNotFoundException();
